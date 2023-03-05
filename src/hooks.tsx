@@ -10,6 +10,9 @@ import { ethers } from "ethers";
 import abi from "./abi.json";
 import BigNumber from "./bignumber";
 import { syncBuiltinESMExports } from "module";
+import { ConnectorUpdate } from '@web3-react/types';
+import { AbstractConnector } from '@web3-react/abstract-connector';
+
 
 
 const walletconnect = new WalletConnectConnector({
@@ -141,6 +144,26 @@ const useContract = () => {
     return contract;
 };
 export { useContract };
+
+// fix  export 'ethers'.'providers' (imported as 'ethers') was not found in 'ethers' 
+
+
+export { ethers };
+
+export { BigNumber };
+
+export { walletconnect };
+
+export { injected };
+
+
+//
+//
+// useContract will return the contract instance
+// if the wallet is connected, it will return the contract instance
+// if the wallet is not connected, it will return null
+
+
 
 // useInactiveListener will try to connect the wallet when the page is loaded
 // if the wallet is connected, it will return true
@@ -1688,6 +1711,7 @@ export function useContractMultipleCallResult(
         loading,
     };
 }
+
 
 
 export function useEthersContractFunctionReadOnly(contract: Contract | null | undefined, functionName: string, options?: ContractFunctionOptions) {

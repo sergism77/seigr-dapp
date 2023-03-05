@@ -1,0 +1,2 @@
+// create bytecode.json
+const bytecode = compiledFactory.evm.bytecode.object;
