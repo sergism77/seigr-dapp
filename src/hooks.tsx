@@ -69,6 +69,7 @@ export const ConnectWallet = () => {
         );
     }
 };
+
  const useEagerConnect = () => {
     const { activate, active } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
     const [tried, setTried] = useState(false);
@@ -116,8 +117,7 @@ export const ConnectWallet = () => {
     return tried;
 };
 
-
-
+export { useEagerConnect };
 
 
 
@@ -140,7 +140,7 @@ const useContract = () => {
 
     return contract;
 };
-
+export { useContract };
 
 // useInactiveListener will try to connect the wallet when the page is loaded
 // if the wallet is connected, it will return true
@@ -204,8 +204,384 @@ const useInactiveListener = (suppress: boolean = false) => {
 
     return tried;
 };
+export { useInactiveListener };
 
-export default useInactiveListener;
+export const useContractSend = (contract, method, args) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract[method](...args);
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args]);
+
+    return [data, loading, error, send];
+};
+    export const useContractSendWithSigner = (contract, method, args) => {
+        const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+        const [data, setData] = useState(null);
+        const [loading, setLoading] = useState(false);
+        const [error, setError] = useState(null);
+
+        const send = useCallback(async () => {
+            if (active && account && library) {
+                try {
+                    setLoading(true);
+                    const tx = await contract.connect(library.getSigner())[method](...args);
+                    const receipt = await tx.wait();
+                    setData(receipt);
+                } catch (error) {
+                    setError(error);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        }, [active, account, library, contract, method, args]);
+
+        return [data, loading, error, send];
+    };
+
+export const useContractCall = (contract, method, args) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const call = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const result = await contract[method](...args);
+                setData(result);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args]);
+
+    return [data, loading, call];
+};  
+
+export const useContractCallWithSigner = (contract, method, args) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const call = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const result = await contract.connect(library.getSigner())[method](...args);
+                setData(result);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args]);
+
+    return [data, loading, call];
+};
+
+export const useContractCallWithSignerAndArgs = (contract, method, args) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const call = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const result = await contract.connect(library.getSigner())[method](args);
+                setData(result);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args]);
+
+    return [data, loading, call];
+};
+
+export const useContractFunctionWithSignerAndArgs = (contract, method, args) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](args);
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }   
+        }   
+    }, [active, account, library, contract, method, args]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunctionWithSignerAndArgsAndValue = (contract, method, args, value) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](args, { value: value });
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args, value]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunctionWithSignerAndValueAndGasLimit = (contract, method, args, value, gasLimit) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](...args, { value: value, gasLimit: gasLimit });
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args, value, gasLimit]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunctionWithSigner = (contract, method, args) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](...args);
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunction = (contract, method, args) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract[method](...args);
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunctionWithSignerAndGasLimitAndGasPrice = (contract, method, args, gasLimit, gasPrice) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](...args, { gasLimit: gasLimit, gasPrice: gasPrice });
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args, gasLimit, gasPrice]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunctionWithSignerAndGasLimitAndGasPriceAndValue = (contract, method, args, gasLimit, gasPrice, value) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](...args, { gasLimit: gasLimit, gasPrice: gasPrice, value: value });
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args, gasLimit, gasPrice, value]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunctionWithSignerAndGasLimitAndValue = (contract, method, args, gasLimit, value) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](...args, { gasLimit: gasLimit, value: value });
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args, gasLimit, value]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunctionWithSignerAndGasLimit = (contract, method, args, gasLimit) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](...args, { gasLimit: gasLimit });
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args, gasLimit]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunctionWithSignerAndGasPrice = (contract, method, args, gasPrice) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](...args, { gasPrice: gasPrice });
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args, gasPrice]);
+
+    return [data, loading, error, send];
+};
+
+export const useContractFunctionWithSignerAndValue = (contract, method, args, value) => {
+    const { active, account, library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const send = useCallback(async () => {
+        if (active && account && library) {
+            try {
+                setLoading(true);
+                const tx = await contract.connect(library.getSigner())[method](...args, { value: value });
+                const receipt = await tx.wait();
+                setData(receipt);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    }, [active, account, library, contract, method, args, value]);
+
+    return [data, loading, error, send];
+};
 
 const useWalletModal = () => {
     const [show, setShow] = useState(false);
@@ -736,7 +1112,6 @@ export function useEthersContractFunction(contract: Contract | null | undefined,
     const [confirmedArgs, setConfirmedArgs] = useState<any[]>([]);
     const [confirmedTx, setConfirmedTx] = useState<ContractTransaction | null>(null);
     const [confirmedTxHash, setConfirmedTxHash] = useState<string | null>(null);
-
     const send = useCallback(
         async (...args: any[]) => {
             if (!contract || !library || !account) return;
@@ -835,6 +1210,485 @@ export function useEthersContractFunction(contract: Contract | null | undefined,
         confirmedTxHash,
     };
 }
+
+// fix export 'useContractTransaction' was not found in './hooks'
+
+export function useContractTransaction(contract: Contract | null | undefined, functionName: string, options?: ContractFunctionOptions) {
+    const { library, account } = useWeb3React<Web3Provider>();
+    const [state, setState] = useState<ContractFunctionState>({});
+    const [args, setArgs] = useState<any[]>([]);
+    const [tx, setTx] = useState<ContractTransaction | null>(null);
+    const [txHash, setTxHash] = useState<string | null>(null);
+    const [receipt, setReceipt] = useState<ContractReceipt | null>(null);
+    const [error, setError] = useState<Error | null>(null);
+    const [called, setCalled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [confirmed, setConfirmed] = useState<boolean>(false);
+    const [confirmedBlockNumber, setConfirmedBlockNumber] = useState<number | null>(null);
+    const [confirmedBlock, setConfirmedBlock] = useState<Block | null>(null);
+    const [confirmedTransaction, setConfirmedTransaction] = useState<TransactionResponse | null>(null);
+    const [confirmedReceipt, setConfirmedReceipt] = useState<ContractReceipt | null>(null);
+    const [confirmedError, setConfirmedError] = useState<Error | null>(null);
+    const [confirmedCalled, setConfirmedCalled] = useState<boolean>(false);
+    const [confirmedLoading, setConfirmedLoading] = useState<boolean>(false);
+    const [confirmedArgs, setConfirmedArgs] = useState<any[]>([]);
+    const [confirmedTx, setConfirmedTx] = useState<ContractTransaction | null>(null);
+    const [confirmedTxHash, setConfirmedTxHash] = useState<string | null>(null);
+    const send = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setCalled(true);
+            setLoading(true);
+            setArgs(args);
+            try {
+                const tx = await contract.estimateGas[functionName](...args, options);
+                setTx(tx);
+                const txHash = await tx.send({ from: account });
+                setTxHash(txHash);
+                const receipt = await txHash.wait();
+                setReceipt(receipt);
+                setError(null);
+                setCalled(false);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setCalled(false);
+                setLoading(false);
+            }
+        },
+        [contract, library, account, functionName, options]
+    );
+
+    const sendConfirmed = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setConfirmedCalled(true);
+            setConfirmedLoading(true);
+            setConfirmedArgs(args);
+            try {
+                const tx = await contract.estimateGas[functionName](...args, options);
+                setConfirmedTx(tx);
+                const txHash = await tx.send({ from: account });
+                setConfirmedTxHash(txHash);
+                const receipt = await txHash.wait();
+                setConfirmedReceipt(receipt);
+                setConfirmedError(null);
+                setConfirmedCalled(false);
+                setConfirmedLoading(false);
+            } catch (error) {
+                setConfirmedError(error);
+                setConfirmedCalled(false);
+                setConfirmedLoading(false);
+            }
+        },
+        [contract, library, account, functionName, options]
+    );
+
+    useEffect(() => {
+        if (!contract || !library || !account) return;
+        const blockNumber = library.getBlockNumber();
+        const block = library.getBlock(blockNumber);
+        const transaction = library.getTransaction(txHash);
+        Promise.all([blockNumber, block, transaction]).then(([blockNumber, block, transaction]) => {
+            setConfirmedBlockNumber(blockNumber);
+            setConfirmedBlock(block);
+            setConfirmedTransaction(transaction);
+        });
+    }, [contract, library, account, txHash]);
+
+    useEffect(() => {
+        if (!contract || !library || !account) return;
+        const blockNumber = library.getBlockNumber();
+        const block = library.getBlock(blockNumber);
+        const transaction = library.getTransaction(confirmedTxHash);
+        Promise.all([blockNumber, block, transaction]).then(([blockNumber, block, transaction]) => {
+            setConfirmedBlockNumber(blockNumber);
+            setConfirmedBlock(block);
+            setConfirmedTransaction(transaction);
+        });
+    }, [contract, library, account, confirmedTxHash]);
+
+    return {
+        send,
+        sendConfirmed,
+        state,
+        args,
+        tx,
+        txHash,
+        receipt,
+        error,
+        called,
+        loading,
+        confirmed,
+        confirmedBlockNumber,
+        confirmedBlock,
+        confirmedTransaction,
+        confirmedReceipt,
+        confirmedError,
+        confirmedCalled,
+        confirmedLoading,
+        confirmedArgs,
+        confirmedTx,
+        confirmedTxHash,
+    };
+}
+
+// fix export 'useEthersContractEvents' was not found in './hooks'
+
+export function useEthersContractEvents(contract: Contract | null | undefined, eventName: string, options?: ContractEventOptions) {
+    const { library, account } = useWeb3React<Web3Provider>();
+    const [state, setState] = useState<ContractEventState>({});
+    const [args, setArgs] = useState<any[]>([]);
+    const [called, setCalled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [result, setResult] = useState<any>();
+
+    const call = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setCalled(true);
+            setLoading(true);
+            setArgs(args);
+            try {
+                const result = await contract.queryFilter(eventName, ...args, options);
+                setResult(result);
+                setError(null);
+                setCalled(false);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setCalled(false);
+                setLoading(false);
+            }
+        },
+        [contract, library, account, eventName, options]
+    );
+
+    return {
+        call,
+        state,
+        args,
+        result,
+        error,
+        called,
+        loading,
+    };
+}
+
+// fix export 'useContractEvents' was not found in './hooks'
+
+export function useContractEvents(contract: Contract | null | undefined, eventName: string, options?: ContractEventOptions) {
+    const { library, account } = useWeb3React<Web3Provider>();
+    const [state, setState] = useState<ContractEventState>({});
+    const [args, setArgs] = useState<any[]>([]);
+    const [called, setCalled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [result, setResult] = useState<any>();
+
+    const call = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setCalled(true);
+            setLoading(true);
+            setArgs(args);
+            try {
+                const result = await contract.queryFilter(eventName, ...args, options);
+                setResult(result);
+                setError(null);
+                setCalled(false);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setCalled(false);
+                setLoading(false);
+            }
+        },
+        [contract, library, account, eventName, options]
+    );
+
+    return {
+        call,
+        state,
+        args,
+        result,
+        error,
+        called,
+        loading,
+    };
+}
+
+// fix export 'useContractMultipleData' was not found in './hooks'
+
+export function useContractMultipleData(
+    contract: Contract | null | undefined,
+    functionName: string,
+    options?: ContractFunctionOptions,
+    ...args: any[]
+) {
+    const { library, account } = useWeb3React<Web3Provider>();
+    const [state, setState] = useState<ContractMultipleDataState>({});
+    const [called, setCalled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [result, setResult] = useState<any>();
+
+    const call = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setCalled(true);
+            setLoading(true);
+            try {
+                const result = await contract.callStatic[functionName](...args, options);
+                setResult(result);
+                setError(null);
+                setCalled(false);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setCalled(false);
+                setLoading(false);
+            }
+        },
+        [contract, library, account, functionName, options]
+    );
+
+    return {
+        call,
+        state,
+        result,
+        error,
+        called,
+        loading,
+    };
+}
+
+// fix export 'useContractSingleData' was not found in './hooks'
+
+export function useContractSingleData(
+    contract: Contract | null | undefined,
+    functionName: string,
+    options?: ContractFunctionOptions,
+    ...args: any[]
+) {
+    const { library, account } = useWeb3React<Web3Provider>();
+    const [state, setState] = useState<ContractSingleDataState>({});
+    const [called, setCalled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [result, setResult] = useState<any>();
+
+    const call = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setCalled(true);
+            setLoading(true);
+            try {
+                const result = await contract.callStatic[functionName](...args, options);
+                setResult(result);
+                setError(null);
+                setCalled(false);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setCalled(false);
+                setLoading(false);
+            }
+        },
+        [contract, library, account, functionName, options]
+    );
+
+    return {
+        call,
+        state,
+        result,
+        error,
+        called,
+        loading,
+    };
+}
+
+// fix export 'useContractMultipleCall' was not found in './hooks'
+
+export function useContractMultipleCall(
+    contract: Contract | null | undefined,
+    functionName: string,
+    options?: ContractFunctionOptions,
+    ...args: any[]
+) {
+    const { library, account } = useWeb3React<Web3Provider>();
+    const [state, setState] = useState<ContractMultipleCallState>({});
+    const [called, setCalled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [result, setResult] = useState<any>();
+
+    const call = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setCalled(true);
+            setLoading(true);
+            try {
+                const result = await contract.callStatic[functionName](...args, options);
+                setResult(result);
+                setError(null);
+                setCalled(false);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setCalled(false);
+                setLoading(false);
+            }
+        },
+        [contract, library, account, functionName, options]
+    );
+
+    return {
+        call,
+        state,
+        result,
+        error,
+        called,
+        loading,
+    };
+}
+
+// fix export 'useContractSingleCall' was not found in './hooks'
+
+export function useContractSingleCall(
+    contract: Contract | null | undefined,
+    functionName: string,
+    options?: ContractFunctionOptions,
+    ...args: any[]
+) {
+    const { library, account } = useWeb3React<Web3Provider>();
+    const [state, setState] = useState<ContractSingleCallState>({});
+    const [called, setCalled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [result, setResult] = useState<any>();
+
+    const call = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setCalled(true);
+            setLoading(true);
+            try {
+                const result = await contract.callStatic[functionName](...args, options);
+                setResult(result);
+                setError(null);
+                setCalled(false);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setCalled(false);
+                setLoading(false);
+            }
+        },
+        [contract, library, account, functionName, options]
+    );
+
+    return {
+        call,
+        state,
+        result,
+        error,
+        called,
+        loading,
+    };
+}
+
+// fix export 'useContractSingleCallResult' was not found in './hooks'
+
+export function useContractSingleCallResult(
+    contract: Contract | null | undefined,
+    functionName: string,
+    options?: ContractFunctionOptions,
+    ...args: any[]
+) {
+    const { library, account } = useWeb3React<Web3Provider>();
+    const [state, setState] = useState<ContractSingleCallResultState>({});
+    const [called, setCalled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [result, setResult] = useState<any>();
+
+    const call = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setCalled(true);
+            setLoading(true);
+            try {
+                const result = await contract.callStatic[functionName](...args, options);
+                setResult(result);
+                setError(null);
+                setCalled(false);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setCalled(false);
+                setLoading(false);
+            }
+        },
+        [contract, library, account, functionName, options]
+    );
+
+    return {
+        call,
+        state,
+        result,
+        error,
+        called,
+        loading,
+    };
+}
+
+// fix export 'useContractMultipleCallResult' was not found in './hooks'
+
+export function useContractMultipleCallResult(
+    contract: Contract | null | undefined,
+    functionName: string,
+    options?: ContractFunctionOptions,
+    ...args: any[]
+) {
+    const { library, account } = useWeb3React<Web3Provider>();
+    const [state, setState] = useState<ContractMultipleCallResultState>({});
+    const [called, setCalled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+    const [result, setResult] = useState<any>();
+
+    const call = useCallback(
+        async (...args: any[]) => {
+            if (!contract || !library || !account) return;
+            setCalled(true);
+            setLoading(true);
+            try {
+                const result = await contract.callStatic[functionName](...args, options);
+                setResult(result);
+                setError(null);
+                setCalled(false);
+                setLoading(false);
+            } catch (error) {
+                setError(error);
+                setCalled(false);
+                setLoading(false);
+            }
+        },
+        [contract, library, account, functionName, options]
+    );
+
+    return {
+        call,
+        state,
+        result,
+        error,
+        called,
+        loading,
+    };
+}
+
 
 export function useEthersContractFunctionReadOnly(contract: Contract | null | undefined, functionName: string, options?: ContractFunctionOptions) {
     const { library, account } = useWeb3React<Web3Provider>();
