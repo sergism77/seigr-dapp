@@ -9,7 +9,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import './App.css';
-import Users from './Users';
+import Users from './components/Users';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { useWeb3React } from '@web3-react/core';
@@ -37,14 +37,11 @@ function App() {
   const { connector, library, chainId, account, activate, deactivate, active, error } = context;
   const triedEager = useEagerConnect();
   useInactiveListener(!triedEager);
-  const contract = useContract(
-    '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-    [
-      'function balanceOf(address owner) view returns (uint)',
-      'function transfer(address to, uint amount)',
-    ],
-    true
-  );
+  const contract = useContract('0x5FbDB2315678afecb367f032d93F642f64180aa3', [
+    'function balanceOf(address owner) view returns (uint)',
+    'function transfer(address to, uint amount)',
+    'event Transfer(address indexed from, address indexed to, uint amount)',
+  ]);
   const contractCall = useContractCall(contract, 'balanceOf', [account]);
   const contractFunction = useContractFunction(contract, 'transfer');
   const contractTransaction = useContractTransaction(contract, 'transfer');
@@ -66,11 +63,7 @@ function App() {
   console.log(contractFunction);
   console.log(contractCall);
   console.log(contract);
-// why does the header not show up?
-// why does the footer not show up?
-// why does the menu not show up?
-// why does the content not show up?
-// why does the layout not show up?
+
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Router>
@@ -78,25 +71,24 @@ function App() {
           <Header>
             <div className="logo" />
             <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
-              <Menu.Item key="1">nav 1</Menu.Item>
-              <Menu.Item key="2">nav 2</Menu.Item>
-              <Menu.Item key="3">nav 3</Menu.Item>
+              <Menu.Item key="1">Home</Menu.Item>
+              <Menu.Item key="2">Wallet</Menu.Item>
+              <Menu.Item key="3">Dashboard</Menu.Item>
+              <Menu.Item key="4">About</Menu.Item>
             </Menu>
           </Header>
           <Content style={{ padding: '0 50px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
               <Breadcrumb.Item>Home</Breadcrumb.Item>
-              <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-              <Breadcrumb.Item>About</Breadcrumb.Item>
+              <Breadcrumb.Item>Wallet</Breadcrumb.Item>
             </Breadcrumb>
             <div className="site-layout-content">
               <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/users" element={<Users />} />
+                <Route path="/" element={<Users />} />
               </Routes>
             </div>
           </Content>
-          <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+          <Footer style={{ textAlign: 'center' }}>Seigr Huset ©2023</Footer>
         </Layout>
       </Router>
     </Web3ReactProvider>
@@ -104,11 +96,3 @@ function App() {
 }
 
 export default App;
-
-export function Home() {
-  return (
-    <div>
-      <h2>Home</h2>
-    </div>
-  );
-}

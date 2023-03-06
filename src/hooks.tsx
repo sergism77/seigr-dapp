@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import React from "react";
+import React, { createContext, useReducer } from "react";
+
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { InjectedConnector } from "@web3-react/injected-connector";
@@ -7,13 +8,12 @@ import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { injected } from './connectors';
 import { Contract } from "ethers";
 import { ethers } from "ethers";
-import abi from "./abi.json";
 import BigNumber from "./bignumber";
 import { syncBuiltinESMExports } from "module";
 import { ConnectorUpdate } from '@web3-react/types';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
-
+export const Web3ReactContext = createContext();
 
 const walletconnect = new WalletConnectConnector({
     rpc: { 5319: "http://81.191.42.97:10000/" },
@@ -1063,7 +1063,6 @@ export function Web3ReactProviderCore({ getLibrary, children }: Web3ReactProvide
         </Web3ReactProviderCoreImpl>
     );
 }
-
 
 export function Web3ReactProvider({ getLibrary, children }: Web3ReactProviderProps) {
     const context = useWeb3ReactManager();
@@ -2697,3 +2696,392 @@ export function useTokenContractDecreaseAllowanceFormatted(tokenAddress: string)
     return tokenContract ? formatEther(tokenContract) : tokenContract;
 }
 
+export function Devounce (props: any) {
+    const { account } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const { library } = useWeb3React<Web3Provider>("http://81.191.42.97:10000/");
+    const [tokenAddress, setTokenAddress] = useState("");
+    const [tokenName, setTokenName] = useState("");
+    const [tokenSymbol, setTokenSymbol] = useState("");
+    const [tokenDecimals, setTokenDecimals] = useState("");
+    const [tokenTotalSupply, setTokenTotalSupply] = useState("");
+    const [tokenBalanceOf, setTokenBalanceOf] = useState("");
+    const [tokenTransfer, setTokenTransfer] = useState("");
+    const [tokenAllowance, setTokenAllowance] = useState("");
+    const [tokenApprove, setTokenApprove] = useState("");
+    const [tokenTransferFrom, setTokenTransferFrom] = useState("");
+    const [tokenPause, setTokenPause] = useState("");
+    const [tokenUnpause, setTokenUnpause] = useState("");
+    const [tokenAddMinter, setTokenAddMinter] = useState("");
+    const [tokenRenounceMinter, setTokenRenounceMinter] = useState("");
+    const [tokenAddPauser, setTokenAddPauser] = useState("");
+    const [tokenRenouncePauser, setTokenRenouncePauser] = useState("");
+    const [tokenIncreaseAllowance, setTokenIncreaseAllowance] = useState("");
+    const [tokenDecreaseAllowance, setTokenDecreaseAllowance] = useState("");
+    const [devounceCallbak, setDevounceCallbak] = useState("");
+    const tokenContractAddress = useTokenContractAddress(tokenAddress);
+    const tokenContractName = useTokenContractName(tokenAddress);
+    const tokenContractSymbol = useTokenContractSymbol(tokenAddress);
+    const tokenContractDecimals = useTokenContractDecimals(tokenAddress);
+    const tokenContractTotalSupply = useTokenContractTotalSupply(tokenAddress);
+    const tokenContractBalanceOf = useTokenContractBalanceOf(tokenAddress);
+    const tokenContractTransfer = useTokenContractTransfer(tokenAddress);
+    const tokenContractAllowance = useTokenContractAllowance(tokenAddress);
+    const tokenContractApprove = useTokenContractApprove(tokenAddress);
+    const tokenContractTransferFrom = useTokenContractTransferFrom(tokenAddress);
+    const tokenContractPause = useTokenContractPause(tokenAddress);
+    const tokenContractUnpause = useTokenContractUnpause(tokenAddress);
+    const tokenContractAddMinter = useTokenContractAddMinter(tokenAddress);
+    const tokenContractRenounceMinter = useTokenContractRenounceMinter(tokenAddress);
+    const tokenContractAddPauser = useTokenContractAddPauser(tokenAddress);
+    const tokenContractRenouncePauser = useTokenContractRenouncePauser(tokenAddress);
+    const tokenContractIncreaseAllowance = useTokenContractIncreaseAllowance(tokenAddress);
+    const tokenContractDecreaseAllowance = useTokenContractDecreaseAllowance(tokenAddress);
+    const tokenContractAddressFormatted = useTokenContractAddressFormatted(tokenAddress);
+    const tokenContractNameFormatted = useTokenContractNameFormatted(tokenAddress);
+    const tokenContractSymbolFormatted = useTokenContractSymbolFormatted(tokenAddress);
+    const tokenContractDecimalsFormatted = useTokenContractDecimalsFormatted(tokenAddress);
+    const tokenContractTotalSupplyFormatted = useTokenContractTotalSupplyFormatted(tokenAddress);
+    const tokenContractBalanceOfFormatted = useTokenContractBalanceOfFormatted(tokenAddress);
+    const tokenContractTransferFormatted = useTokenContractTransferFormatted(tokenAddress);
+    const tokenContractAllowanceFormatted = useTokenContractAllowanceFormatted(tokenAddress);
+    const tokenContractApproveFormatted = useTokenContractApproveFormatted(tokenAddress);
+    const tokenContractTransferFromFormatted = useTokenContractTransferFromFormatted(tokenAddress);
+    const tokenContractPauseFormatted = useTokenContractPauseFormatted(tokenAddress);
+    const tokenContractUnpauseFormatted = useTokenContractUnpauseFormatted(tokenAddress);
+    const tokenContractAddMinterFormatted = useTokenContractAddMinterFormatted(tokenAddress);
+    const tokenContractRenounceMinterFormatted = useTokenContractRenounceMinterFormatted(tokenAddress);
+    const tokenContractAddPauserFormatted = useTokenContractAddPauserFormatted(tokenAddress);
+    const tokenContractRenouncePauserFormatted = useTokenContractRenouncePauserFormatted(tokenAddress);
+    const tokenContractIncreaseAllowanceFormatted = useTokenContractIncreaseAllowanceFormatted(tokenAddress);
+    const tokenContractDecreaseAllowanceFormatted = useTokenContractDecreaseAllowanceFormatted(tokenAddress);
+    const devounceCallbakFormatted = useDevounceCallbakFormatted();
+
+    const handleTokenAddressChange = useCallback((event: any) => {
+        setTokenAddress(event.target.value);
+    }
+        , []);
+    const handleTokenNameChange = useCallback((event: any) => {
+        setTokenName(event.target.value);
+    }
+        , []);
+    const handleTokenSymbolChange = useCallback((event: any) => {
+        setTokenSymbol(event.target.value);
+    }
+        , []);
+    const handleTokenDecimalsChange = useCallback((event: any) => {
+        setTokenDecimals(event.target.value);
+    }
+        , []);
+    const handleTokenTotalSupplyChange = useCallback((event: any) => {
+        setTokenTotalSupply(event.target.value);
+    }
+        , []);
+    const handleTokenBalanceOfChange = useCallback((event: any) => {
+        setTokenBalanceOf(event.target.value);
+    }
+        , []);
+    const handleTokenTransferChange = useCallback((event: any) => {
+        setTokenTransfer(event.target.value);
+    }
+        , []);
+    const handleTokenAllowanceChange = useCallback((event: any) => {
+        setTokenAllowance(event.target.value);
+    }
+        , []);
+    const handleTokenApproveChange = useCallback((event: any) => {
+        setTokenApprove(event.target.value);
+    }
+        , []);
+    const handleTokenTransferFromChange = useCallback((event: any) => {
+        setTokenTransferFrom(event.target.value);
+    }
+        , []);
+    const handleTokenPauseChange = useCallback((event: any) => {
+        setTokenPause(event.target.value);
+    }
+        , []);
+    const handleTokenUnpauseChange = useCallback((event: any) => {
+        setTokenUnpause(event.target.value);
+    }
+        , []);
+    const handleTokenAddMinterChange = useCallback((event: any) => {
+        setTokenAddMinter(event.target.value);
+    }
+        , []);
+    const handleTokenRenounceMinterChange = useCallback((event: any) => {
+        setTokenRenounceMinter(event.target.value);
+    }
+        , []);
+    const handleTokenAddPauserChange = useCallback((event: any) => {
+        setTokenAddPauser(event.target.value);
+    }
+        , []);
+    const handleTokenRenouncePauserChange = useCallback((event: any) => {
+        setTokenRenouncePauser(event.target.value);
+    }
+        , []);
+    const handleTokenIncreaseAllowanceChange = useCallback((event: any) => {
+        setTokenIncreaseAllowance(event.target.value);
+    }
+        , []);
+    const handleTokenDecreaseAllowanceChange = useCallback((event: any) => {
+        setTokenDecreaseAllowance(event.target.value);
+    }
+        , []);
+    const handleDevounceCallbakChange = useCallback((event: any) => {
+        setDevounceCallbak(event.target.value);
+    }
+        , []);
+
+    const handleTokenAddressSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractAddress(tokenAddress);
+    }
+        , [tokenAddress]);
+    const handleTokenNameSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractName(tokenName);
+    }
+        , [tokenName]);
+    const handleTokenSymbolSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractSymbol(tokenSymbol);
+    }
+        , [tokenSymbol]);
+    const handleTokenDecimalsSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractDecimals(tokenDecimals);
+    }
+        , [tokenDecimals]);
+    const handleTokenTotalSupplySubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractTotalSupply(tokenTotalSupply);
+    }
+        , [tokenTotalSupply]);
+    const handleTokenBalanceOfSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractBalanceOf(tokenBalanceOf);
+    }
+        , [tokenBalanceOf]);
+    const handleTokenTransferSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractTransfer(tokenTransfer);
+    }
+        , [tokenTransfer]);
+    const handleTokenAllowanceSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractAllowance(tokenAllowance);
+    }
+        , [tokenAllowance]);
+    const handleTokenApproveSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractApprove(tokenApprove);
+    }
+        , [tokenApprove]);
+    const handleTokenTransferFromSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractTransferFrom(tokenTransferFrom);
+    }
+        , [tokenTransferFrom]);
+    const handleTokenPauseSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractPause(tokenPause);
+    }
+        , [tokenPause]);
+    const handleTokenUnpauseSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractUnpause(tokenUnpause);
+    }
+        , [tokenUnpause]);
+    const handleTokenAddMinterSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractAddMinter(tokenAddMinter);
+    }
+        , [tokenAddMinter]);
+    const handleTokenRenounceMinterSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractRenounceMinter(tokenRenounceMinter);
+    }
+        , [tokenRenounceMinter]);
+    const handleTokenAddPauserSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractAddPauser(tokenAddPauser);
+    }
+        , [tokenAddPauser]);
+    const handleTokenRenouncePauserSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractRenouncePauser(tokenRenouncePauser);
+    }
+        , [tokenRenouncePauser]);
+    const handleTokenIncreaseAllowanceSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractIncreaseAllowance(tokenIncreaseAllowance);
+    }
+        , [tokenIncreaseAllowance]);
+    const handleTokenDecreaseAllowanceSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        tokenContractDecreaseAllowance(tokenDecreaseAllowance);
+    }
+        , [tokenDecreaseAllowance]);
+    const handleDevounceCallbakSubmit = useCallback((event: any) => {
+        event.preventDefault();
+        devounceCallbak(devounceCallbak);
+    }
+        , [devounceCallbak]);
+
+// what other hooks are missing on hooks.js?
+
+    return (
+        <div className="App">
+            <header className="App-header">
+                <img src={logo} className="App-logo" alt="logo" />
+                <p>
+                    Edit <code>src/App.js</code> and save to reload.
+                </p>
+                <a
+                    className="App-link"
+                    href="https://reactjs.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Learn React
+                </a>
+                <form onSubmit={handleTokenAddressSubmit}>
+                    <label>
+                        Token Address:
+                        <input type="text" value={tokenAddress} onChange={handleTokenAddressChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenNameSubmit}>
+                    <label>
+                        Token Name:
+                        <input type="text" value={tokenName} onChange={handleTokenNameChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenSymbolSubmit}>
+                    <label>
+                        Token Symbol:
+                        <input type="text" value={tokenSymbol} onChange={handleTokenSymbolChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenDecimalsSubmit}>
+                    <label>
+                        Token Decimals:
+                        <input type="text" value={tokenDecimals} onChange={handleTokenDecimalsChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenTotalSupplySubmit}>
+                    <label>
+                        Token Total Supply:
+                        <input type="text" value={tokenTotalSupply} onChange={handleTokenTotalSupplyChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenBalanceOfSubmit}>
+                    <label>
+                        Token Balance Of:
+                        <input type="text" value={tokenBalanceOf} onChange={handleTokenBalanceOfChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenTransferSubmit}>
+                    <label>
+                        Token Transfer:
+                        <input type="text" value={tokenTransfer} onChange={handleTokenTransferChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenAllowanceSubmit}>
+                    <label>
+                        Token Allowance:
+                        <input type="text" value={tokenAllowance} onChange={handleTokenAllowanceChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenApproveSubmit}>
+                    <label>
+                        Token Approve:
+                        <input type="text" value={tokenApprove} onChange={handleTokenApproveChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenTransferFromSubmit}>
+                    <label>
+                        Token Transfer From:
+                        <input type="text" value={tokenTransferFrom} onChange={handleTokenTransferFromChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenPauseSubmit}>
+                    <label>
+                        Token Pause:
+                        <input type="text" value={tokenPause} onChange={handleTokenPauseChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenUnpauseSubmit}>
+                    <label>
+                        Token Unpause:
+                        <input type="text" value={tokenUnpause} onChange={handleTokenUnpauseChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenAddMinterSubmit}>
+                    <label>
+                        Token Add Minter:
+                        <input type="text" value={tokenAddMinter} onChange={handleTokenAddMinterChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenRenounceMinterSubmit}>
+                    <label>
+                        Token Renounce Minter:
+                        <input type="text" value={tokenRenounceMinter} onChange={handleTokenRenounceMinterChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenAddPauserSubmit}>
+                    <label>
+                        Token Add Pauser:
+                        <input type="text" value={tokenAddPauser} onChange={handleTokenAddPauserChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenRenouncePauserSubmit}>
+                    <label>
+                        Token Renounce Pauser:
+                        <input type="text" value={tokenRenouncePauser} onChange={handleTokenRenouncePauserChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleTokenIncreaseAllowanceSubmit}>
+                    <label>
+                        Token Increase Allowance:
+                        <input type="text" value={tokenIncreaseAllowance} onChange={handleTokenIncreaseAllowanceChange} />
+                    </label>
+                    <input type="submit" value="Submit" />  
+                </form>
+                <form onSubmit={handleTokenDecreaseAllowanceSubmit}>
+                    <label>
+                        Token Decrease Allowance:
+                        <input type="text" value={tokenDecreaseAllowance} onChange={handleTokenDecreaseAllowanceChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+                <form onSubmit={handleDevounceCallbakSubmit}>
+                    <label>
+                        Devounce Callbak:
+                        <input type="text" value={devounceCallbak} onChange={handleDevounceCallbakChange} />
+                    </label>
+                    <input type="submit" value="Submit" />
+                </form>
+            </header>
+        </div>
+    );
+}
+
+export default App;
