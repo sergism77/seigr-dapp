@@ -1,33 +1,20 @@
-import { Contract } from '@ethersproject/contracts';
-import { useWeb3React } from '@web3-react/core';
-import { useEffect, useState } from 'react';
-import { useActiveWeb3React } from './useActiveWeb3React';
-
-export function useContractCall(
-    contract: Contract | null | undefined,
-    functionName: string,
-    args: any[] | undefined,
-    shouldPoll = false,
-    pollInterval = 10000
-    ) {
-    const { library } = useActiveWeb3React();
-    const [value, setValue] = useState<any>();
-    
-    useEffect(() => {
-        if (!contract || !library) return;
-    
-        const poll = async () => {
-        const value = await contract[functionName](...args);
-        setValue(value);
-        };
-    
-        poll();
-    
-        if (shouldPoll) {
-        const interval = setInterval(poll, pollInterval);
-        return () => clearInterval(interval);
+import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
+import { Contract } from "@ethersproject/contracts";
+import { useMemo } from "react";
+import { useEagerConnect, useInactiveListener } from "./useWeb3";
+import { useContractCall, useContractFunction, useContractTransaction, useContractEvents, useContractMultipleData, useContractSingleData, useContractMultipleCall, useContractSingleCall, useContractSingleCallResult, useContractMultipleCallResult } from "./useContract";
+export { useEagerConnect, useInactiveListener, useContract, useContractCall, useContractFunction, useContractTransaction, useContractEvents, useContractMultipleData, useContractSingleData, useContractMultipleCall, useContractSingleCall, useContractSingleCallResult, useContractMultipleCallResult };
+export function useContract(address, ABI, withSignerIfPossible) {
+    const { library, account } = useWeb3React();
+    return useMemo(() => {
+        if (!address || !ABI || !library) return null;
+        try {
+            return new Contract(address, ABI, withSignerIfPossible && account ? library.getSigner(account).connectUnchecked() : library);
+        } catch (error) {
+            console.log(error);
+            return null;
         }
-    }, [contract, functionName, args, library, shouldPoll, pollInterval]);
-    
-    return value;
-    }
+    }, [address, ABI, withSignerIfPossible, library, account]);
+}
+

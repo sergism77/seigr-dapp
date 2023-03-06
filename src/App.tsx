@@ -1,5 +1,3 @@
-import logo from './logo.svg';
-import 'antd/dist/reset.css';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb, Button } from 'antd';
@@ -19,6 +17,10 @@ import { injected } from './connectors';
 import { useEagerConnect, useInactiveListener,
   useContract, useContractCall, useContractFunction, useContractTransaction, useContractEvents, useContractMultipleData, useContractSingleData, useContractMultipleCall, useContractSingleCall, useContractSingleCallResult, useContractMultipleCallResult } from './hooks';
 import { Header, Content, Footer } from 'antd/es/layout/layout';
+
+const { SubMenu } = Menu;
+
+// create submenu for each section
 
 
 // all the app's sections are wrapped in the Web3ReactProvider

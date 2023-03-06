@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { useActiveWeb3React } from './useActiveWeb3React';
 
-export function useContractCall (
+export function useContractTransaction(
     contract: Contract | null | undefined,
     functionName: string,
     args: any[] | undefined,
@@ -32,6 +32,3 @@ export function useContractCall (
     return value;
     }
 
-//
-//
-//

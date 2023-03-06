@@ -4,18 +4,25 @@ import { Contract } from "@ethersproject/contracts";
 import { useMemo } from "react";
 import { useEagerConnect, useInactiveListener } from "./useWeb3";
 import { useContractCall, useContractFunction, useContractTransaction, useContractEvents, useContractMultipleData, useContractSingleData, useContractMultipleCall, useContractSingleCall, useContractSingleCallResult, useContractMultipleCallResult } from "./useContract";
+import { useBlockNumber } from "./useBlockNumber";
+import { useActiveWeb3React } from "./useActiveWeb3React";
+
+export function index() {
+  const context = useWeb3React();
+  const contextNetwork = useWeb3React("NETWORK");
+  return context.active ? context : contextNetwork;
+}
+
 export { useEagerConnect, useInactiveListener, useContract, useContractCall, useContractFunction, useContractTransaction, useContractEvents, useContractMultipleData, useContractSingleData, useContractMultipleCall, useContractSingleCall, useContractSingleCallResult, useContractMultipleCallResult };
 export function useContract(address, ABI, withSignerIfPossible) {
-
-
     const { library, account } = useWeb3React();
     return useMemo(() => {
         if (!address || !ABI || !library) return null;
         try {
-            return new Contract(address, ABI, withSignerIfPossible && account ? library.getSigner(account).connectUnchecked() : library);
+        return new Contract(address, ABI, withSignerIfPossible && account ? library.getSigner(account).connectUnchecked() : library);
         } catch (error) {
-            console.log(error);
-            return null;
+        console.log(error);
+        return null;
         }
     }, [address, ABI, withSignerIfPossible, library, account]);
-}
+    }

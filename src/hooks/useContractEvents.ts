@@ -5,29 +5,29 @@ import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { useActiveWeb3React } from './useActiveWeb3React';
 
-export function useContractCall (
+export function useContractEvents (
     contract: Contract | null | undefined,
-    functionName: string,
-    args: any[] | undefined,
+    eventName: string,
+    filter: any,
     ) {
     const { library, account } = useActiveWeb3React();
     const [value, setValue] = useState<any>();
     
     useEffect(() => {
         if (!contract || !library) return;
-    
+
         const poll = async () => {
-        const value = await contract[functionName](...args);
+        const value = await contract.queryFilter(eventName, filter);
         setValue(value);
         };
-    
+
         poll();
-    
+
         if (shouldPoll) {
         const interval = setInterval(poll, pollInterval);
         return () => clearInterval(interval);
         }
-    }, [contract, functionName, args, library, shouldPoll, pollInterval]);
+    }, [contract, eventName, filter, library, shouldPoll, pollInterval]);
     
     return value;
     }

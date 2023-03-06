@@ -5,33 +5,26 @@ import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { useActiveWeb3React } from './useActiveWeb3React';
 
-export function useContractCall (
-    contract: Contract | null | undefined,
-    functionName: string,
-    args: any[] | undefined,
-    ) {
+export function useBlockNumber () {
     const { library, account } = useActiveWeb3React();
     const [value, setValue] = useState<any>();
-    
-    useEffect(() => {
-        if (!contract || !library) return;
-    
-        const poll = async () => {
-        const value = await contract[functionName](...args);
-        setValue(value);
-        };
-    
-        poll();
-    
-        if (shouldPoll) {
-        const interval = setInterval(poll, pollInterval);
-        return () => clearInterval(interval);
-        }
-    }, [contract, functionName, args, library, shouldPoll, pollInterval]);
-    
-    return value;
-    }
 
-//
-//
-//
+    useEffect(() => {
+        if (!library) return;
+
+        const poll = async () => {
+            const value = await library.getBlockNumber();
+            setValue(value);
+        };
+
+        poll();
+
+        if (shouldPoll) {
+            const interval = setInterval(poll, pollInterval);
+            return () => clearInterval(interval);
+        }
+    }, [library, shouldPoll, pollInterval]);
+
+    return value;
+}
+
