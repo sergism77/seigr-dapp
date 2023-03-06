@@ -18,6 +18,7 @@ import { useWeb3React } from '@web3-react/core';
 import { injected } from './connectors';
 import { useEagerConnect, useInactiveListener,
   useContract, useContractCall, useContractFunction, useContractTransaction, useContractEvents, useContractMultipleData, useContractSingleData, useContractMultipleCall, useContractSingleCall, useContractSingleCallResult, useContractMultipleCallResult } from './hooks';
+import { Header, Content, Footer } from 'antd/es/layout/layout';
 
 
 // all the app's sections are wrapped in the Web3ReactProvider

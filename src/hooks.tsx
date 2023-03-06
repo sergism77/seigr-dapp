@@ -144,8 +144,10 @@ const useContract = () => {
     return contract;
 };
 export { useContract };
+// fix the TS2345: Argument of type 'BigNumber' is not assignable to parameter of type 'SetStateAction<BigNumber | undefined>' error
 
-// fix  export 'ethers'.'providers' (imported as 'ethers') was not found in 'ethers' 
+
+
 
 
 export { ethers };
